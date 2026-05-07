@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -44,8 +45,9 @@ public class OrderController {
 
     @GetMapping("/status/{status}")
     @Operation(summary = "Listar pedidos por status com paginação")
-    public ResponseEntity<Page<OrderResponse>> findByStatus(@PathVariable String status,
-            @PageableDefault(size = 10, sort = "crateDate", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Page<OrderResponse>> findByStatus(
+            @PathVariable String status,
+            @ParameterObject @PageableDefault(size = 10, sort = "crateDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(orderService.findByStatus(status, pageable));
     }
 }

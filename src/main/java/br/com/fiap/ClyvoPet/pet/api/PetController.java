@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,7 +34,7 @@ public class PetController {
     @GetMapping
     @Operation(summary = "Listar pets com paginação")
     public ResponseEntity<Page<PetResponse>> findAll(
-            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(petService.findAll(pageable));
     }
 
@@ -51,21 +52,24 @@ public class PetController {
 
     @GetMapping("/species/{species}")
     @Operation(summary = "Buscar pets por espécie")
-    public ResponseEntity<Page<PetResponse>> findBySpecies(@PathVariable String species,
-            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+    public ResponseEntity<Page<PetResponse>> findBySpecies(
+            @PathVariable String species,
+            @ParameterObject @PageableDefault(size = 10, sort = "name") Pageable pageable) {
         return ResponseEntity.ok(petService.findBySpecies(species, pageable));
     }
 
     @GetMapping("/search")
     @Operation(summary = "Buscar pets por nome")
-    public ResponseEntity<Page<PetResponse>> findByName(@RequestParam String name,
-            @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<Page<PetResponse>> findByName(
+            @RequestParam String name,
+            @ParameterObject @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(petService.findByName(name, pageable));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar pet")
-    public ResponseEntity<PetResponse> update(@PathVariable Long id, @Valid @RequestBody PetRequest request) {
+    public ResponseEntity<PetResponse> update(@PathVariable Long id,
+                                              @Valid @RequestBody PetRequest request) {
         return ResponseEntity.ok(petService.update(id, request));
     }
 

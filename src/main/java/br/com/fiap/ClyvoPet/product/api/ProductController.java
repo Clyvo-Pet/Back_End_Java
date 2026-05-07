@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,7 +33,7 @@ public class ProductController {
     @GetMapping
     @Operation(summary = "Listar produtos com paginação e ordenação")
     public ResponseEntity<Page<ProductResponse>> findAll(
-            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(productService.findAll(pageable));
     }
 
@@ -44,28 +45,32 @@ public class ProductController {
 
     @GetMapping("/search")
     @Operation(summary = "Buscar produto por nome")
-    public ResponseEntity<Page<ProductResponse>> findByName(@RequestParam String name,
-            @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<Page<ProductResponse>> findByName(
+            @RequestParam String name,
+            @ParameterObject @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(productService.findByName(name, pageable));
     }
 
     @GetMapping("/category/{category}")
     @Operation(summary = "Filtrar por categoria")
-    public ResponseEntity<Page<ProductResponse>> findByCategory(@PathVariable String category,
-            @PageableDefault(size = 10, sort = "price") Pageable pageable) {
+    public ResponseEntity<Page<ProductResponse>> findByCategory(
+            @PathVariable String category,
+            @ParameterObject @PageableDefault(size = 10, sort = "price") Pageable pageable) {
         return ResponseEntity.ok(productService.findByCategory(category, pageable));
     }
 
     @GetMapping("/species/{species}")
     @Operation(summary = "Filtrar por espécie alvo")
-    public ResponseEntity<Page<ProductResponse>> findBySpecies(@PathVariable String species,
-            @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<Page<ProductResponse>> findBySpecies(
+            @PathVariable String species,
+            @ParameterObject @PageableDefault(size = 10) Pageable pageable) {
         return ResponseEntity.ok(productService.findBySpecies(species, pageable));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar produto")
-    public ResponseEntity<ProductResponse> update(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
+    public ResponseEntity<ProductResponse> update(@PathVariable Long id,
+                                                  @Valid @RequestBody ProductRequest request) {
         return ResponseEntity.ok(productService.update(id, request));
     }
 

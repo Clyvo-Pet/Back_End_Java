@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/clyvo/pet/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Tag(name = "Usuários", description = "Gerenciamento de usuários")
 public class UserController {
@@ -33,7 +34,7 @@ public class UserController {
     @GetMapping
     @Operation(summary = "Listar usuários com paginação")
     public ResponseEntity<Page<UserResponse>> findAll(
-            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(userService.findAll(pageable));
     }
 
@@ -41,7 +42,7 @@ public class UserController {
     @Operation(summary = "Buscar usuário por nome")
     public ResponseEntity<Page<UserResponse>> findByName(
             @RequestParam String name,
-            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 10, sort = "name") Pageable pageable) {
         return ResponseEntity.ok(userService.findByName(name, pageable));
     }
 
@@ -65,7 +66,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/dashboard/{id}")
+    @GetMapping("/{id}/dashboard")
     @Operation(summary = "Dashboard de saúde dos pets do usuário")
     public ResponseEntity<DashboardResponse> getDashboard(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getDashboard(id));

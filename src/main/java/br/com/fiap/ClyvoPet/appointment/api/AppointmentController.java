@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -44,14 +45,16 @@ public class AppointmentController {
 
     @GetMapping("/status/{status}")
     @Operation(summary = "Listar consultas por status com paginação")
-    public ResponseEntity<Page<AppointmentResponse>> findByStatus(@PathVariable String status,
-            @PageableDefault(size = 10, sort = "time", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<AppointmentResponse>> findByStatus(
+            @PathVariable String status,
+            @ParameterObject @PageableDefault(size = 10, sort = "time", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(appointmentService.findByStatus(status, pageable));
     }
 
     @PatchMapping("/{id}/status")
     @Operation(summary = "Atualizar status da consulta")
-    public ResponseEntity<AppointmentResponse> updateStatus(@PathVariable Long id, @RequestParam String status) {
+    public ResponseEntity<AppointmentResponse> updateStatus(@PathVariable Long id,
+                                                            @RequestParam String status) {
         return ResponseEntity.ok(appointmentService.updateStatus(id, status));
     }
 
