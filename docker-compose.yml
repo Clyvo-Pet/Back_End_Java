@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+
+  oracle:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: clyvo-oracle
+    environment:
+      ORACLE_PASSWORD: 150606
+      ORACLE_DATABASE: XEPDB1
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+    restart: unless-stopped
+
+  app:
+    build: ../../DevOps/devops
+    container_name: clyvo-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle:1521/XEPDB1
+      SPRING_DATASOURCE_USERNAME: system
+      SPRING_DATASOURCE_PASSWORD: 150606
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.OracleDialect
+    depends_on:
+      oracle:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  oracle-data:
+    name: clyvo-oracle-data
